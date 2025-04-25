@@ -1,16 +1,13 @@
 package ar.com.dontar.demo.model;
 
 import ar.com.dontar.demo.controller.dto.PatientDto;
-import ar.com.dontar.demo.persistence.entity.PatientEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Patient extends User {
+public class Patient extends Usuario {
 
     private LocalDate dateOfBirth;
     private String obraSocial;
@@ -20,20 +17,6 @@ public class Patient extends User {
     public Patient(){
         this.appointmentsPatient = new ArrayList<>();
     }
-
-    public Patient(PatientDto patientDto){
-        this();
-        this.setDni(patientDto.getDni());
-        this.setFirstName(patientDto.getFirstName());
-        this.setLastName(patientDto.getLastName());
-        this.setEmail(patientDto.getEmail());
-        this.setPassword(patientDto.getPassword());
-        this.setUserType(UserType.PACIENTE);
-        this.setDateOfBirth(LocalDate.parse(patientDto.getDateOfBirth()));
-        this.setObraSocial(patientDto.getObraSocial());
-        this.setPhone(patientDto.getPhone());
-    }
-
 
     public LocalDate getDateOfBirth() {
         return dateOfBirth;

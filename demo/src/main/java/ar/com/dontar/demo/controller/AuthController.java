@@ -1,0 +1,69 @@
+package ar.com.dontar.demo.controller;
+
+
+import ar.com.dontar.demo.controller.response.AuthResponse;
+import ar.com.dontar.demo.controller.dto.LoginRequest;
+import ar.com.dontar.demo.exception.IncorrectPaswordException;
+import ar.com.dontar.demo.exception.UserNotExistsException;
+import ar.com.dontar.demo.persistence.entity.UserEntity;
+import ar.com.dontar.demo.security.JwtUtilService;
+import ar.com.dontar.demo.service.implementation.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private AuthenticationManager authManager;
+
+    @Autowired
+    private JwtUtilService jwtUtil;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws IncorrectPaswordException, UserNotExistsException {
+        System.out.println("➡️ Login request: " + loginRequest);
+
+        try {
+
+            UserEntity user = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String token = jwtUtil.generateToken(user);
+
+            return ResponseEntity.ok(new AuthResponse(token));
+
+        } catch (UsernameNotFoundException ex) {
+            throw new UserNotExistsException("El usuario no se encuentra registrado");
+        }
+        catch (BadCredentialsException ex) {
+           throw new IncorrectPaswordException("La contraseña es incorrecta");
+        }
+    }
+
+    @PutMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody String username) throws UserNotExistsException {
+        userDetailsService.forgotPassaword(username);
+        return ResponseEntity.ok("Su contraseña ha sido reestablecida, es su numero de dni");
+    }
+
+}

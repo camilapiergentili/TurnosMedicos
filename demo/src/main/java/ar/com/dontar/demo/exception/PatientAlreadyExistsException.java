@@ -1,4 +1,4 @@
-package ar.com.dontar.demo.model.exception;
+package ar.com.dontar.demo.exception;
 
 public class PatientAlreadyExistsException extends Exception{
     public PatientAlreadyExistsException(String message){

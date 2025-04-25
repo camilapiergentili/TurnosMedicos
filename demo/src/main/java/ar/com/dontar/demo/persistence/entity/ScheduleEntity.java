@@ -1,11 +1,10 @@
 package ar.com.dontar.demo.persistence.entity;
 
-import ar.com.dontar.demo.model.Professional;
 import ar.com.dontar.demo.model.Schedule;
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
 
-import java.time.LocalDate;
+
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -16,29 +15,55 @@ public class ScheduleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idSchedule;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id", nullable = false)
     private ProfessionalEntity professional;
 
-    private LocalDate day;
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek day;
+
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public ScheduleEntity(Schedule schedule, ProfessionalEntity professionalEntity){
-        this.day = schedule.getDay();
-        this.startTime = schedule.getStartTime();
-        this.endTime = schedule.getEndTime();
-        this.professional = professionalEntity;
+    public ScheduleEntity(){}
+
+    public int getIdSchedule() {
+        return idSchedule;
     }
 
-    public Schedule scheduleToModel(){
-        Schedule schedule = new Schedule();
-        schedule.setIdSchedule(this.idSchedule);
-        schedule.setDay(this.day);
-        schedule.setStartTime(this.startTime);
-        schedule.setEndTime(this.endTime);
-        schedule.setProfessional(this.professional.professionalToModel());
+    public void setIdSchedule(int idSchedule) {
+        this.idSchedule = idSchedule;
+    }
 
-        return schedule;
+    public ProfessionalEntity getProfessional() {
+        return professional;
+    }
+
+    public void setProfessional(ProfessionalEntity professional) {
+        this.professional = professional;
+    }
+
+    public DayOfWeek getDay() {
+        return day;
+    }
+
+    public void setDay(DayOfWeek day) {
+        this.day = day;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
     }
 }

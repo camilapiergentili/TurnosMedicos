@@ -1,14 +1,12 @@
 package ar.com.dontar.demo.model;
 
-import jakarta.persistence.*;
-
-public class User {
+public class Usuario {
 
     private long idUser;
     private long dni;
     private String firstName;
     private String lastName;
-    private String email;
+    private String username;
     private String password;
     private UserType userType;
 
@@ -36,12 +34,12 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getLastName() {

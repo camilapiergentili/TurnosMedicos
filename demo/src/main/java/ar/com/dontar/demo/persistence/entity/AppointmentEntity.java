@@ -17,41 +17,81 @@ public class AppointmentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idAppointment;
 
-    private LocalDate diaTurno;
-    private LocalTime horarioTurno;
+    private LocalDate appointmentDay;
+    private LocalTime appointmentTime;
 
     @Enumerated(EnumType.STRING)
-    private AppointmentStatus estado;
+    private AppointmentStatus appointmentStatus;
 
 
     @ManyToOne
-    @JoinColumn(name = "id_patient")
-    private PatientEntity paciente;
+    @JoinColumn(name = "patient_id")
+    private PatientEntity patient;
 
     @ManyToOne
-    @JoinColumn(name = "id_professional", nullable = false)
-    private ProfessionalEntity profesional;
+    @JoinColumn(name = "professional_id", nullable = false)
+    private ProfessionalEntity professional;
 
-    public AppointmentEntity(Appointment appointment, ProfessionalEntity professional, PatientEntity patient){
-        this.diaTurno = appointment.getDiaTurno();
-        this.horarioTurno = appointment.getHorarioTurno();
-        this.estado = appointment.getEstado();
-        this.paciente = patient;
-        this.profesional = professional;
+    @ManyToOne
+    @JoinColumn(name = "speciality_id")
+    private SpecialityEntity speciality;
+
+    public AppointmentEntity(){
     }
 
-    public Appointment appointmentToModel(){
-        Appointment appointment = new Appointment();
-        appointment.setDiaTurno(this.diaTurno);
-        appointment.setHorarioTurno(this.horarioTurno);
-        appointment.setEstado(this.estado);
-        appointment.setPaciente(this.paciente.toModel());
-        appointment.setProfesional(this.profesional.professionalToModel());
-
-        return appointment;
+    public long getIdAppointment() {
+        return idAppointment;
     }
 
+    public void setIdAppointment(long idAppointment) {
+        this.idAppointment = idAppointment;
+    }
 
+    public LocalDate getAppointmentDay() {
+        return appointmentDay;
+    }
 
+    public void setAppointmentDay(LocalDate appointmentDay) {
+        this.appointmentDay = appointmentDay;
+    }
 
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(LocalTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
+    public AppointmentStatus getAppointmentStatus() {
+        return appointmentStatus;
+    }
+
+    public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
+    }
+
+    public PatientEntity getPatient() {
+        return patient;
+    }
+
+    public void setPatient(PatientEntity patient) {
+        this.patient = patient;
+    }
+
+    public ProfessionalEntity getProfessional() {
+        return professional;
+    }
+
+    public void setProfessional(ProfessionalEntity professional) {
+        this.professional = professional;
+    }
+
+    public SpecialityEntity getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(SpecialityEntity speciality) {
+        this.speciality = speciality;
+    }
 }

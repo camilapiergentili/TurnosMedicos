@@ -1,49 +1,69 @@
 package ar.com.dontar.demo.persistence.entity;
 
-import ar.com.dontar.demo.model.User;
+import ar.com.dontar.demo.model.Usuario;
 import ar.com.dontar.demo.model.UserType;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
-@Table(name = "User")
+@Table(name = "Users")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idUser;
 
-    private final long dni;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
-    private final String password;
+    private long dni;
+    private String firstName;
+    private String lastName;
+    private String username;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private final UserType userType;
+    private UserType userType;
 
+    public UserEntity() {
 
-    public UserEntity(User user) {
+    }
+
+    public UserEntity(Usuario user) {
         this.dni = user.getDni();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-        this.email = user.getEmail();
+        this.username = user.getUsername();
         this.userType = user.getUserType();
         this.password = user.getPassword();
     }
 
-    public User userToModel(){
-        User user = new User();
-        user.setIdUser(this.idUser);
-        user.setDni(this.dni);
-        user.setFirstName(this.firstName);
-        user.setLastName(this.lastName);
-        user.setEmail(this.email);
-        user.setPassword(this.password);
-        user.setUserType(this.userType);
+    public void setDni(long dni) {
+        this.dni = dni;
+    }
 
-        return user;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setUsername(String userName) {
+        this.username = userName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public long getIdUser() {
@@ -66,19 +86,42 @@ public class UserEntity {
         return lastName;
     }
 
-
-    public String getEmail() {
-        return email;
-    }
-
-
     public String getPassword() {
         return password;
     }
 
-
     public UserType getUserType() {
         return userType;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + userType.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }

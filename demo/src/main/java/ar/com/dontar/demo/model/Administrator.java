@@ -1,4 +1,8 @@
 package ar.com.dontar.demo.model;
 
-public class Administrator extends User {
+public class Administrator extends Usuario {
+
+    public Administrator(){
+
+    }
 }

@@ -9,19 +9,15 @@ import java.time.LocalTime;
 public class Appointment {
 
     private long idAppointment;
-    private LocalDate diaTurno;
-    private LocalTime horarioTurno;
-    private AppointmentStatus estado;
-    private Patient paciente;
-    private Professional profesional;
+    private LocalDate appointmentDay;
+    private LocalTime appointmentTime;
+    private AppointmentStatus appointmentStatus;
+    private Patient patient;
+    private Professional professional;
+    private Speciality speciality;
 
     public Appointment(){
 
-    }
-
-    public Appointment(AppointmentDto appointmentDto){
-        this.diaTurno = LocalDate.parse(appointmentDto.getDay());
-        this.horarioTurno = LocalTime.parse(appointmentDto.getTimeAppointment());
     }
 
     public long getIdAppointment() {
@@ -32,43 +28,51 @@ public class Appointment {
         this.idAppointment = idAppointment;
     }
 
-    public LocalDate getDiaTurno() {
-        return diaTurno;
+    public LocalDate getAppointmentDay() {
+        return appointmentDay;
     }
 
-    public void setDiaTurno(LocalDate diaTurno) {
-        this.diaTurno = diaTurno;
+    public void setAppointmentDay(LocalDate appointmentDay) {
+        this.appointmentDay = appointmentDay;
     }
 
-    public LocalTime getHorarioTurno() {
-        return horarioTurno;
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
     }
 
-    public void setHorarioTurno(LocalTime horarioTurno) {
-        this.horarioTurno = horarioTurno;
+    public void setAppointmentTime(LocalTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 
-    public AppointmentStatus getEstado() {
-        return estado;
+    public AppointmentStatus getAppointmentStatus() {
+        return appointmentStatus;
     }
 
-    public void setEstado(AppointmentStatus estado) {
-        this.estado = estado;
+    public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
     }
 
-    public Patient getPaciente() {
-        return paciente;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPaciente(Patient paciente) {
-        this.paciente = paciente;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public Professional getProfesional() {
-        return profesional;
+    public Professional getProfessional() {
+        return professional;
     }
 
-    public void setProfesional(Professional profesional) {
-        this.profesional = profesional;
+    public void setProfessional(Professional professional) {
+        this.professional = professional;
+    }
+
+    public Speciality getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(Speciality speciality) {
+        this.speciality = speciality;
     }
 }

@@ -1,13 +1,22 @@
 package ar.com.dontar.demo.controller.dto;
 
-import java.time.LocalDate;
+
+import ar.com.dontar.demo.validation.annotation.ValidString;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 
 public class PatientDto extends UserDto {
 
     private String dateOfBirth;
+
+    @ValidString
     private String obraSocial;
+
+    @Pattern(regexp = "^[0-9]{8,}$", message = "El número de telefo debe contar con caracteres números")
     private String phone;
 
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "La fecha debe tener el formato yyyy-MM-dd")
+    @Past(message = "La fecha de nacimiento debe ser pasada")
     public String getDateOfBirth() {
         return dateOfBirth;
     }

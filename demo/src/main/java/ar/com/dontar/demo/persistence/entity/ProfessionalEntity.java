@@ -1,72 +1,80 @@
 package ar.com.dontar.demo.persistence.entity;
 
-import ar.com.dontar.demo.model.*;
+
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "Professional")
 @PrimaryKeyJoinColumn(name = "idUser")
-public class ProfessionalEntity extends UserEntity{
+public class ProfessionalEntity extends UserEntity {
 
-    @OneToMany(mappedBy = "professional", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<AppointmentEntity> appointmentsProfessional = new ArrayList<>();
+    @OneToMany(mappedBy = "professional", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AppointmentEntity> appointmentsProfessional = new ArrayList<>();
 
     @OneToMany(mappedBy = "professional", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleEntity> scheduleEntity = new ArrayList<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "professional_speciality",
             joinColumns = @JoinColumn(name = "professional_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id")
     )
-    private List<SpecialityEntity> specialities = new ArrayList<>();
+    private Set<SpecialityEntity> specialities = new HashSet<>();
 
-    private final String matricula;
+    private String matricula;
 
-    public ProfessionalEntity(Professional professional, List<SpecialityEntity> specialityEntities) {
-        super(professional);
-        this.matricula = professional.getMatricula();
-        if(professional.getSchedules() != null || professional.getSchedules().isEmpty()){
-            this.scheduleEntity = professional.getSchedules().stream()
-                    .map(schedule -> new ScheduleEntity(schedule, this)) // 'this' es el ProfessionalEntity
-                    .collect(Collectors.toList());
+    public ProfessionalEntity() {}
 
+    public void setSpecialities(Set<SpecialityEntity> specialities) {
+        for (SpecialityEntity speciality : specialities) {
+            this.addSpeciality(speciality);
         }
-        this.specialities = specialityEntities;
-
     }
 
-    public Professional professionalToModel(){
-        Professional professional = new Professional();
-        professional.setDni(super.getDni());
-        professional.setFirstName(super.getFirstName());
-        professional.setLastName(super.getLastName());
-        professional.setEmail(super.getEmail());
-        professional.setPassword(super.getPassword());
-        professional.setMatricula(this.matricula);
-
-        return professional;
+    public void addSpeciality(SpecialityEntity speciality) {
+        if (!this.specialities.contains(speciality)) {
+            this.specialities.add(speciality);
+            speciality.getProfessionalSpeciality().add(this);
+        }
     }
 
-    public List<AppointmentEntity> getAppointmentsProfessional() {
-        return appointmentsProfessional;
+    public void addSchedule(ScheduleEntity scheduleEntity){
+        this.scheduleEntity.add(scheduleEntity);
     }
 
     public List<ScheduleEntity> getScheduleEntity() {
         return scheduleEntity;
     }
 
-    public List<SpecialityEntity> getSpecialities() {
+    public void setScheduleEntity(List<ScheduleEntity> schedule) {
+        this.scheduleEntity = schedule;
+    }
+
+    public List<AppointmentEntity> getAppointmentsProfessional() {
+        return appointmentsProfessional;
+    }
+
+    public void setAppointmentsProfessional(List<AppointmentEntity> appointmentsProfessional) {
+        this.appointmentsProfessional.addAll(appointmentsProfessional);
+    }
+
+    public Set<SpecialityEntity> getSpecialities() {
         return specialities;
     }
 
     public String getMatricula() {
         return matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
     }
 }

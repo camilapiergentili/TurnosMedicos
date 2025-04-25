@@ -1,16 +1,18 @@
 package ar.com.dontar.demo.model;
 
+import ar.com.dontar.demo.controller.dto.SpecialityDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Specialty {
+public class Speciality {
 
     private long idSpeciality;
     private String specialityName;
 
     private List<Professional> professionals;
 
-    public Specialty(){
+    public Speciality(){
         this.professionals = new ArrayList<>();
     }
 

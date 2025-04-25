@@ -6,7 +6,7 @@ public class Clinic {
     private String cliniAddress;
     private String clinicPhone;
     private Professional professional;
-    private Specialty specialty;
+    private Speciality specialty;
 
     public String getClinicName() {
         return clinicName;
@@ -40,11 +40,11 @@ public class Clinic {
         this.professional = professional;
     }
 
-    public Specialty getSpecialty() {
+    public Speciality getSpecialty() {
         return specialty;
     }
 
-    public void setSpecialty(Specialty specialty) {
+    public void setSpecialty(Speciality specialty) {
         this.specialty = specialty;
     }
 }

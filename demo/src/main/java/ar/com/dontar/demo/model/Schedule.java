@@ -1,28 +1,26 @@
 package ar.com.dontar.demo.model;
 
 import ar.com.dontar.demo.controller.dto.ScheduleDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Schedule {
 
+    @JsonIgnore
     private int idSchedule;
+
+    @JsonIgnore
     private Professional professional;
-    private LocalDate day;
+
+    private DayOfWeek day;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public Schedule(){
-
-    }
-
-    public Schedule(ScheduleDto scheduleDto, Professional professional){
-        this.day = LocalDate.parse(scheduleDto.getDay());
-        this.startTime = LocalTime.parse(scheduleDto.getStartTime());
-        this.endTime = LocalTime.parse(scheduleDto.getEndTime());
-        this.professional = professional;
-    }
+    public Schedule(){}
 
     public int getIdSchedule() {
         return idSchedule;
@@ -40,11 +38,11 @@ public class Schedule {
         this.professional = professional;
     }
 
-    public LocalDate getDay() {
+    public DayOfWeek getDay() {
         return day;
     }
 
-    public void setDay(LocalDate day) {
+    public void setDay(DayOfWeek day) {
         this.day = day;
     }
 

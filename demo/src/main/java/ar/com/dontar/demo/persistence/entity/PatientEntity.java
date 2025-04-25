@@ -11,33 +11,14 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "idUser")
 public class PatientEntity extends UserEntity {
 
-    private final LocalDate dateOfBirth;
-    private final String obraSocial;
-    private final String phone;
+    private LocalDate dateOfBirth;
+    private String obraSocial;
+    private String phone;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AppointmentEntity> appointmentsPatient = new ArrayList<>();
 
-    public PatientEntity(Patient patient) {
-        super(patient);
-        this.dateOfBirth = patient.getDateOfBirth();
-        this.obraSocial = patient.getObraSocial();
-        this.phone = patient.getPhone();
-    }
-
-    public Patient toModel(){
-        Patient patient = new Patient();
-        patient.setDni(super.getDni());
-        patient.setFirstName(super.getFirstName());
-        patient.setLastName(super.getLastName());
-        patient.setEmail(super.getEmail());
-        patient.setPassword(super.getPassword());
-        patient.setDateOfBirth(this.dateOfBirth);
-        patient.setObraSocial(this.obraSocial);
-        patient.setPhone(this.phone);
-
-        return patient;
-    }
+    public PatientEntity() {}
 
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
@@ -55,7 +36,19 @@ public class PatientEntity extends UserEntity {
         return appointmentsPatient;
     }
 
-    public void setAppointmentsPatient(List<AppointmentEntity> appointmentsPatient) {
-        this.appointmentsPatient = appointmentsPatient;
+    public void setAppointmentsPatient(AppointmentEntity appointmentsPatient) {
+        this.appointmentsPatient.add(appointmentsPatient);
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setObraSocial(String obraSocial) {
+        this.obraSocial = obraSocial;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
