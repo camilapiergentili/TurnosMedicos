@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Permite solicitudes de todos los orígenes (no recomendado para producción)
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // Origen de tu frontend
+                .allowedOrigins("https://effervescent-pavlova-0b97a8.netlify.app/") // Origen de tu frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos HTTP permitidos
                 .allowedHeaders("*") // Permite todos los encabezados
                 .allowCredentials(true); // Permite el uso de cookies
