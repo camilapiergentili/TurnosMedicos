@@ -38,10 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("🔍 Filtro JWT ejecutado para: " + request.getRequestURI());
         String token = jwtUtil.getTokenFromRequest(request);
-
-        System.out.println("🔍 Token JWT ejecutado para: " + token);
 
         if(token != null) {
             try {
@@ -51,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
                 String username = jwtUtil.getUsernameFromToken(token);
-                System.out.println("🔍 Usuario extraído del token: " + username);
+
                 UserEntity userDetails = userDetailsService.loadUserByUsername(username);
 
                 if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null) {

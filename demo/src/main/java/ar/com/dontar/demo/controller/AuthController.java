@@ -19,8 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -36,8 +34,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws IncorrectPaswordException, UserNotExistsException {
-        System.out.println("➡️ Login request: " + loginRequest);
-
         try {
 
             UserEntity user = userDetailsService.loadUserByUsername(loginRequest.getUsername());
@@ -49,8 +45,10 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String token = jwtUtil.generateToken(user);
+            String role = user.getUserType().toString();
 
-            return ResponseEntity.ok(new AuthResponse(token));
+            return ResponseEntity.ok(new AuthResponse(token, role));
+
 
         } catch (UsernameNotFoundException ex) {
             throw new UserNotExistsException("El usuario no se encuentra registrado");

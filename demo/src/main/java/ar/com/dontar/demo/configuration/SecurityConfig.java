@@ -56,8 +56,6 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        System.out.println("✅ Seguridad configurada correctamente");
-
         return http.build();
     }
 

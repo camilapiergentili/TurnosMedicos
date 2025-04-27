@@ -34,10 +34,8 @@ public class JwtUtilService {
     }
 
     public String generateToken(UserEntity user) {
-        System.out.println("📌 Generando token para: " + user.getUsername());
-        System.out.println("🔑 Clave usada para firmar: " + SECRET_KEY);
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("role", "ROLE_" + user.getUserType().name())
                 .claim("id", user.getIdUser())
@@ -45,16 +43,10 @@ public class JwtUtilService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
-
-        System.out.println("✅ Token generado: " + token);
-        return token;
     }
 
     public boolean validateToken(String token) throws InvalidTokenException {
         try{
-            System.out.println("📩 Token recibido para validación: " + token);
-            System.out.println("🔑 Clave usada en validación: " + SECRET_KEY);
-
             Jwts.parserBuilder()
                     .setSigningKey(getSignKey())
                     .build()
@@ -72,10 +64,6 @@ public class JwtUtilService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
-            System.out.println("🔍 Claims completos: " + claims); // 👈 Ver todos los claims
-            System.out.println("🔍 Subject (username): " + claims.getSubject());
-
             return claims.getSubject();
         } catch (Exception err) {
             throw new ExtractInfoUserFromTokenException("Error al extraer el email del token: " + err.getMessage());
@@ -85,14 +73,11 @@ public class JwtUtilService {
     public String getTokenFromRequest(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
 
-        System.out.println("🔍 Header Authorization recibido: " + header);
-
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            System.out.println("🔍 Token extraído: " + token);
+
             return token;
         }
-
         return null;
     }
 

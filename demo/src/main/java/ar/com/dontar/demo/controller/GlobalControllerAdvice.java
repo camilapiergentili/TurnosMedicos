@@ -13,7 +13,6 @@ public class GlobalControllerAdvice {
     @Autowired
     JwtUtilService jwtUtilService;
 
-
     @ModelAttribute("idUser")
     public Long extractUserIdFromToken(@RequestHeader("Authorization") String authHeader) throws ExtractInfoUserFromTokenException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
