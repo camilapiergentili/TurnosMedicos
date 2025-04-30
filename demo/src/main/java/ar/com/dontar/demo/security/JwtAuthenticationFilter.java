@@ -76,13 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicRoute(String path) {
-        // Verifica si la ruta está en las rutas públicas
-        for (String publicRoute : PublicRoutesConfig.PUBLIC_ROUTES) {
-            if (path.startsWith(publicRoute)) {
-                return true;
-            }
-        }
-        return false;
+        return PublicRoutesConfig.PUBLIC_ROUTES.contains(path);
     }
 
     private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {

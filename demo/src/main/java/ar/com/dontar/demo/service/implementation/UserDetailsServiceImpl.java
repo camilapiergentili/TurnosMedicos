@@ -39,5 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         userEntity.setPassword(passwordEncoder.encode(newPassword));
 
+        userRepository.save(userEntity);
+
     }
 }

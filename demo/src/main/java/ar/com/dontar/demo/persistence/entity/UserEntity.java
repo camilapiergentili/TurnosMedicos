@@ -50,8 +50,8 @@ public class UserEntity implements UserDetails {
         this.firstName = firstName;
     }
 
-    public void setUsername(String userName) {
-        this.username = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setLastName(String lastName) {

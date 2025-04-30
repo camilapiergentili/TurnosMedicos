@@ -20,14 +20,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtUtilService {
 
-
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-
-    @PostConstruct
-    public void init() {
-        System.out.println("🔑 SECRET_KEY: " + SECRET_KEY);
-    }
 
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
@@ -74,9 +68,8 @@ public class JwtUtilService {
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
 
-            return token;
+            return header.substring(7);
         }
         return null;
     }

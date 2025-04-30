@@ -1,7 +1,10 @@
 package ar.com.dontar.demo.controller.dto;
 
+import jakarta.validation.constraints.Email;
+
 public class LoginRequest {
 
+    @Email
     private String username;
     private String password;
 

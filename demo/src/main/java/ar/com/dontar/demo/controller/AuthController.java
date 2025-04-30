@@ -1,6 +1,7 @@
 package ar.com.dontar.demo.controller;
 
 
+import ar.com.dontar.demo.controller.dto.ForgotPasswordDto;
 import ar.com.dontar.demo.controller.response.AuthResponse;
 import ar.com.dontar.demo.controller.dto.LoginRequest;
 import ar.com.dontar.demo.exception.IncorrectPaswordException;
@@ -8,8 +9,8 @@ import ar.com.dontar.demo.exception.UserNotExistsException;
 import ar.com.dontar.demo.persistence.entity.UserEntity;
 import ar.com.dontar.demo.security.JwtUtilService;
 import ar.com.dontar.demo.service.implementation.UserDetailsServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -32,15 +33,16 @@ public class AuthController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws IncorrectPaswordException, UserNotExistsException {
-        try {
 
-            UserEntity user = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) throws IncorrectPaswordException, UserNotExistsException {
+        try {
 
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsername(), loginRequest.getPassword()));
+
+            UserEntity user = userDetailsService.loadUserByUsername(loginRequest.getUsername());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -59,8 +61,8 @@ public class AuthController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody String username) throws UserNotExistsException {
-        userDetailsService.forgotPassaword(username);
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDto request) throws UserNotExistsException {
+        userDetailsService.forgotPassaword(request.getUsername());
         return ResponseEntity.ok("Su contraseña ha sido reestablecida, es su numero de dni");
     }
 

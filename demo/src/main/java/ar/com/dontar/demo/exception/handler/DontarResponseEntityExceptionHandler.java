@@ -117,11 +117,11 @@ public class DontarResponseEntityExceptionHandler extends ResponseEntityExceptio
             return HttpStatus.NOT_FOUND;
         } else if (errorCode >= 3000 && errorCode < 4000) {
             return HttpStatus.CONFLICT;
-        } else if (errorCode >= 5000 && errorCode < 6000) {
+        } else if (errorCode >= 4000 && errorCode < 5000) { // 🔥 acá corregido
             return HttpStatus.UNAUTHORIZED;
-        } else if (errorCode >= 6000 && errorCode < 7000) {
+        } else if (errorCode >= 5000 && errorCode < 6000) {
             return HttpStatus.FORBIDDEN;
-        }else {
+        } else {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }

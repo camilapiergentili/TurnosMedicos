@@ -11,5 +11,6 @@ public class PublicRoutesConfig {
         PUBLIC_ROUTES.add("/auth/login");
         PUBLIC_ROUTES.add("/auth/forgot-password");
         PUBLIC_ROUTES.add("/patient/register");
+        PUBLIC_ROUTES.add("/professional/all-professionals");
     }
 }
