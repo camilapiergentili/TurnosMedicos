@@ -18,10 +18,10 @@ public class GlobalControllerAdvice {
     @ModelAttribute("idUser")
     public Long extractUserIdFromToken(HttpServletRequest request) throws ExtractInfoUserFromTokenException {
         String path = request.getRequestURI();
+        System.out.println("Evaluando ruta: " + path);
 
-        // Si es ruta pública, no intentes extraer el token
-        if (PublicRoutesConfig.PUBLIC_ROUTES.contains(path)) {
-            return null; // O podés tirar una excepción, o devolver un valor especial
+        if (isPublicRoute(path)) {
+            return null;
         }
 
         String authHeader = request.getHeader("Authorization");
@@ -37,7 +37,7 @@ public class GlobalControllerAdvice {
     public String extractUserTypeFromToken(HttpServletRequest request) throws ExtractInfoUserFromTokenException {
         String path = request.getRequestURI();
 
-        if (PublicRoutesConfig.PUBLIC_ROUTES.contains(path)) {
+        if (isPublicRoute(path)) {
             return null;
         }
 
@@ -48,6 +48,12 @@ public class GlobalControllerAdvice {
         }
 
         return jwtUtilService.extractRoleFromToken(authHeader.replace("Bearer ", ""));
+    }
+
+    private boolean isPublicRoute(String path) {
+        // Evita errores con o sin barra al final
+        String normalizedPath = path.replaceAll("/$", "");
+        return PublicRoutesConfig.PUBLIC_ROUTES.contains(normalizedPath);
     }
 }
 

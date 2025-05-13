@@ -72,4 +72,7 @@ public class UserDto {
         return confirmPassword;
     }
 
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 }

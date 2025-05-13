@@ -21,7 +21,7 @@ public class AdministratorSpecialityController {
     @Autowired
     SpecialityService specialityService;
 
-    //publica
+
     @GetMapping("/get-all")
     public List<SpecialityResponse> getAllSpecialities(){
         return specialityService.getAllSpeciality();

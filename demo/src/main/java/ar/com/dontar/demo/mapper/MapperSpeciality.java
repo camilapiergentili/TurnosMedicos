@@ -33,6 +33,7 @@ public class MapperSpeciality {
 
     public static SpecialityResponse specialityEntityToResponse(SpecialityEntity specialityEntity) {
         SpecialityResponse specialityResponse = new SpecialityResponse();
+        specialityResponse.setIdSpeciality(specialityEntity.getIdSpeciality());
         specialityResponse.setName(specialityEntity.getNameSpeciality());
 
         return specialityResponse;

@@ -16,7 +16,6 @@ public class PatientDto extends UserDto {
     private String phone;
 
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "La fecha debe tener el formato yyyy-MM-dd")
-    @Past(message = "La fecha de nacimiento debe ser pasada")
     public String getDateOfBirth() {
         return dateOfBirth;
     }
