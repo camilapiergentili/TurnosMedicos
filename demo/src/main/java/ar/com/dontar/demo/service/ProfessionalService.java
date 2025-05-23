@@ -11,7 +11,7 @@ import ar.com.dontar.demo.model.Schedule;
 import java.util.List;
 
 public interface ProfessionalService {
-    void registerProfessional(ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException;
+    ProfessionalResponse registerProfessional(ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException;
     ProfessionalResponse findProfessionalByID(long id) throws UserNotExistsException;
     ProfessionalResponse findProfessionalByDni(long dniProfessional) throws UserNotExistsException;
     void deleteProfessional(long id) throws UserNotExistsException;

@@ -21,9 +21,8 @@ public class AdministratorProfessionalController {
     ProfessionalService professionalService;
 
     @PostMapping("/register-professional")
-    public ResponseEntity<Object> registerProfessinal(@RequestBody ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException {
-        professionalService.registerProfessional(professionalDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Profesional registrado con éxito");
+    public ResponseEntity<ProfessionalResponse> registerProfessinal(@RequestBody ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException {
+        return ResponseEntity.ok(professionalService.registerProfessional(professionalDto));
     }
 
     @GetMapping("/find-by-dni/{dniProfessional}")

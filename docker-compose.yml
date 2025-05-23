@@ -7,8 +7,8 @@ services:
       - "8081:8081"
     environment:
       DB_URL: jdbc:mysql://clinica_dontar:3306/clinica_odontologica?createDatabaseIfNotExist=true&serverTimezone=UTC
-      DB_USERNAME: Camila
-      DB_PASSWORD: Camila38944251
+      DB_USERNAME: root
+      DB_PASSWORD: 12345
       JWT_SECRET: very_long_secret_key_that_has_more_than_32_bytes_for_security_purposes
     restart: always
     depends_on:
@@ -20,9 +20,9 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: Camila38944251
-      MYSQL_USER: Camila
-      MYSQL_PASSWORD: Camila38944251
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345
       MYSQL_DATABASE: clinica_odontologica
     restart: always
     healthcheck:

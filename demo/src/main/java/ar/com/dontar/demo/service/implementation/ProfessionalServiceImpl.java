@@ -37,7 +37,7 @@ public class ProfessionalServiceImpl implements ProfessionalService {
 
     @Override
     @Transactional
-    public void registerProfessional(ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException {
+    public ProfessionalResponse registerProfessional(ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException {
 
         Professional professional = MapperProfessional.professionalDtoToModel(professionalDto);
 
@@ -69,6 +69,8 @@ public class ProfessionalServiceImpl implements ProfessionalService {
         professionalEntity.setSpecialities(specialityEntities);
 
         professionalRepository.save(professionalEntity);
+
+        return MapperProfessional.professionalEntityToResponse(professionalEntity);
 
     }
 

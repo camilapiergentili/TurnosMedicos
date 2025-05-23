@@ -10,7 +10,7 @@ public class StringValidator implements ConstraintValidator<ValidString, String>
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if(s == null || s.trim().isEmpty()) return false;
+        if(s == null || s.isEmpty()) return false;
         return s.matches(REGEX);
     }
 }
