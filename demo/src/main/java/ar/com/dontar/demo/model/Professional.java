@@ -1,5 +1,4 @@
 package ar.com.dontar.demo.model;
-import ar.com.dontar.demo.controller.dto.ProfessionalDto;
 
 import java.util.ArrayList;
 import java.util.HashSet;

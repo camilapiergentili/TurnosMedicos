@@ -10,6 +10,7 @@ import ar.com.dontar.demo.exception.UserNotExistsException;
 import ar.com.dontar.demo.persistence.PatientRepository;
 import ar.com.dontar.demo.persistence.entity.PatientEntity;
 import ar.com.dontar.demo.service.PatientService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class PatientServiceImpl implements PatientService {
 
     // This method is used to register the patient
     @Override
+    @Transactional
     public void signUp(PatientDto patientDto) throws PatientAlreadyExistsException, EmailAlreadyRegisteredException {
         Patient patient = MapperPatient.patientDtoToModel(patientDto);
 
@@ -80,6 +82,18 @@ public class PatientServiceImpl implements PatientService {
 
     }
 
+    public PatientEntity findPatientEntityByDni(long dni) throws UserNotExistsException {
+
+        PatientEntity patientEntity = patientRepository.findByDni(dni);
+
+        if(patientEntity == null){
+            throw new UserNotExistsException("El paciente con dni " + dni + " no se encuentra registrado");
+        }
+
+        return patientEntity;
+
+    }
+
     public PatientEntity findPatientWithAppointment(long idPatient) throws UserNotExistsException {
 
         return patientRepository.findByIdWithAppointment(idPatient)
@@ -96,7 +110,6 @@ public class PatientServiceImpl implements PatientService {
         patientEntity.setFirstName(patientDto.getFirstName());
         patientEntity.setLastName(patientDto.getLastName());
         patientEntity.setUsername(patientDto.getUsername());
-        patientEntity.setPassword(passwordEncoder.encode(patientDto.getPassword()));
         patientEntity.setDateOfBirth(LocalDate.parse(patientDto.getDateOfBirth()));
         patientEntity.setPhone(patientDto.getPhone());
         patientEntity.setObraSocial(patientDto.getObraSocial());

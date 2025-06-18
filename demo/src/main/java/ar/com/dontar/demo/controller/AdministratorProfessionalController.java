@@ -30,12 +30,6 @@ public class AdministratorProfessionalController {
         return ResponseEntity.ok(professionalService.findProfessionalByDni(dniProfessional));
     }
 
-    @PutMapping("/update-data-professional/{Id}")
-    public ResponseEntity<Object> updateDataProfessional(@PathVariable long Id, @RequestBody ProfessionalDto professionalDto) throws UserNotExistsException {
-        professionalService.updateProfessionalData(Id, professionalDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Profesional modificado con exito");
-    }
-
     @PostMapping("/add-new-speciality/{idProfessional}/{idSpeciality}")
     public ResponseEntity<Object> addNewSpecialityProfessional(@PathVariable long idProfessional, @PathVariable long idSpeciality) throws SpecialityNotExistsException, UserNotExistsException, SpecialityAlreadyExistsException {
         professionalService.addNewSpecialityToTheProfessional(idProfessional, idSpeciality);

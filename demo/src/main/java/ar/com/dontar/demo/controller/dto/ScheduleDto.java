@@ -7,6 +7,8 @@ import java.time.LocalDate;
 
 public class ScheduleDto {
 
+    private long id;
+
     @ValidString
     private String day;
 
@@ -16,6 +18,13 @@ public class ScheduleDto {
     @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$")
     private String endTime;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getDay() {
         return day;

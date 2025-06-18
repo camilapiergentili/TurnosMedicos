@@ -1,6 +1,7 @@
 package ar.com.dontar.demo.controller;
 
 import ar.com.dontar.demo.controller.dto.ScheduleDto;
+import ar.com.dontar.demo.exception.AppoinmentNotGenerateException;
 import ar.com.dontar.demo.exception.ScheduleAlreadyExistsException;
 import ar.com.dontar.demo.exception.ScheduleNotExistsException;
 import ar.com.dontar.demo.exception.UserNotExistsException;
@@ -19,7 +20,7 @@ public class AdministratorScheduleController {
     ScheduleService scheduleService;
 
     @PostMapping("/add-schedule/{id}")
-    public ResponseEntity<Object> addSchedule(@PathVariable long id, @RequestBody List<ScheduleDto> scheduleDto) throws UserNotExistsException, ScheduleAlreadyExistsException {
+    public ResponseEntity<Object> addSchedule(@PathVariable long id, @RequestBody List<ScheduleDto> scheduleDto) throws UserNotExistsException, ScheduleAlreadyExistsException, AppoinmentNotGenerateException, ScheduleNotExistsException {
         scheduleService.createSchedule(id, scheduleDto);
         return ResponseEntity.ok("Agenda creada con exito");
     }

@@ -74,6 +74,7 @@ public class MapperPatient {
 
     public static PatientResponse patientEntityToResponse(PatientEntity patientEntity) {
         PatientResponse patientResponse = new PatientResponse();
+        patientResponse.setId(patientEntity.getIdUser());
         patientResponse.setFirstName(patientEntity.getFirstName());
         patientResponse.setLastName(patientEntity.getLastName());
         patientResponse.setUsername(patientEntity.getUsername());

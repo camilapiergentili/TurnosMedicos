@@ -130,6 +130,10 @@ public class ProfessionalServiceImpl implements ProfessionalService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProfessionalEntity> getAllProfessionalsEntity() {
+        return professionalRepository.findAll();
+    }
+
     public ProfessionalEntity getProfessionalWithScheduleEntity(long idProfessional) throws UserNotExistsException {
 
         return professionalRepository.findByWithSchedule(idProfessional)

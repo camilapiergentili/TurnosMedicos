@@ -10,7 +10,6 @@ import java.time.LocalTime;
 
 public class Schedule {
 
-    @JsonIgnore
     private int idSchedule;
 
     @JsonIgnore

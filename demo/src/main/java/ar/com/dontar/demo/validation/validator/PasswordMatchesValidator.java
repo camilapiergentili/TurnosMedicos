@@ -1,15 +1,15 @@
 package ar.com.dontar.demo.validation.validator;
 
 
-import ar.com.dontar.demo.controller.dto.UserDto;
+import ar.com.dontar.demo.validation.PasswordConfirmation;
 import ar.com.dontar.demo.validation.annotation.PasswordMatches;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, UserDto> {
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, PasswordConfirmation> {
 
     @Override
-    public boolean isValid(UserDto userDto, ConstraintValidatorContext context) {
+    public boolean isValid(PasswordConfirmation userDto, ConstraintValidatorContext context) {
         if(userDto.getPassword() == null || userDto.getConfirmPassword() == null){
             return false;
         }

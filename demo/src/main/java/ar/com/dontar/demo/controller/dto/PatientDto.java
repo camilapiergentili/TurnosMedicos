@@ -2,7 +2,6 @@ package ar.com.dontar.demo.controller.dto;
 
 
 import ar.com.dontar.demo.validation.annotation.ValidString;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 
 public class PatientDto extends UserDto {

@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/appointment")
@@ -30,6 +32,11 @@ public class AppointmentController {
     @GetMapping("/available/{Id}")
     public List<LocalTime> availableAppointment(@PathVariable long Id, @RequestParam String date) throws UserNotExistsException, AppointmentNotExistsException, AppoinmentNotGenerateException {
         return appointmentService.getAvailableAppointment(Id, date);
+    }
+
+    @GetMapping("/date/{Id}")
+    public Set<LocalDate> dateAppointment(@PathVariable long Id) throws UserNotExistsException, AppointmentNotExistsException {
+        return appointmentService.getDateAppointment(Id);
     }
 
     @PreAuthorize("hasRole('PROFESIONAL') or hasRole('ADMINISTRADOR')")

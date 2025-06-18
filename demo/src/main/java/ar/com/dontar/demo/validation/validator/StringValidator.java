@@ -6,11 +6,11 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class StringValidator implements ConstraintValidator<ValidString, String> {
 
-    private static final String REGEX = "^[a-zA-Z]{3,}$";
+    private static final String REGEX = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]{3,}$";
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if(s == null || s.isEmpty()) return false;
+        if(s == null || s.trim().isEmpty()) return false;
         return s.matches(REGEX);
     }
 }

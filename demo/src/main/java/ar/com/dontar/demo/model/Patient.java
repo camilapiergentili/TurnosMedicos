@@ -1,7 +1,5 @@
 package ar.com.dontar.demo.model;
 
-import ar.com.dontar.demo.controller.dto.PatientDto;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

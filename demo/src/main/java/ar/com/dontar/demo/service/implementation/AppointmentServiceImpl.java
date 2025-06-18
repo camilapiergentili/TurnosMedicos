@@ -12,17 +12,17 @@ import ar.com.dontar.demo.persistence.entity.*;
 import ar.com.dontar.demo.service.AppointmentService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -47,11 +47,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         ProfessionalEntity professionalEntity = professionalService.getProfessionalWithScheduleEntity(idProfessional);
 
-        if (professionalEntity.getScheduleEntity().isEmpty()) {
+        if (professionalEntity.getScheduleEntity() == null || professionalEntity.getScheduleEntity().isEmpty()) {
             throw new ScheduleNotExistsException("El profesional " + professionalEntity.getLastName() + " no tiene agenda disponible.");
         }
 
-        List<Appointment> appointments = genetateAppointmentForMonth(professionalEntity, LocalDate.now());
+        List<Appointment> appointments = generateAppointmentForMonth(professionalEntity, LocalDate.now());
 
 
         if (appointments.isEmpty()) {
@@ -75,12 +75,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private List<Appointment> genetateAppointmentForMonth(ProfessionalEntity professionalEntity, LocalDate startAppointment) throws AppoinmentNotGenerateException {
+    private List<Appointment> generateAppointmentForMonth(ProfessionalEntity professionalEntity, LocalDate startAppointment) throws AppoinmentNotGenerateException {
 
         List<Appointment> appointments = new ArrayList<>();
         LocalDate endAppointment = startAppointment.plusMonths(1);
 
-        while (!startAppointment.isAfter(endAppointment)) {
+        while (startAppointment.isBefore(endAppointment)) {
             appointments.addAll(generateAppointmentForDay(professionalEntity, startAppointment));
             startAppointment = startAppointment.plusDays(1);
         }
@@ -91,15 +91,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private List<Appointment> generateAppointmentForDay(ProfessionalEntity professionalEntity, LocalDate startAppointment) throws AppoinmentNotGenerateException {
         List<Appointment> appointments = new ArrayList<>();
+
+        List<AppointmentEntity> existsAppointment = appointmentRepository.
+                findAppointmentByProfessionalAndDay(professionalEntity.getIdUser(), startAppointment);
+
+        Set<LocalTime> occupiedTimes = existsAppointment.stream().
+                map(AppointmentEntity::getAppointmentTime).collect(Collectors.toSet());
+
         for (ScheduleEntity s : professionalEntity.getScheduleEntity()) {
             if (startAppointment.getDayOfWeek().equals(s.getDay())) {
                 LocalTime timeAppointment = s.getStartTime();
 
                 while (timeAppointment.isBefore(s.getEndTime())) {
-                    boolean exists = appointmentRepository.existsByProfessionalAndAppointmentDayAndAppointmentTime(
-                            professionalEntity, startAppointment, timeAppointment);
 
-                    if(!exists){
+                    if(!occupiedTimes.contains(timeAppointment)){
                         Appointment appointment = new Appointment();
                         appointment.setAppointmentDay(startAppointment);
                         appointment.setAppointmentTime(timeAppointment);
@@ -114,7 +119,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         return appointments;
-
     }
 
     @Override
@@ -150,6 +154,22 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         return appointmentRepository.getUnavailableAppointmentTimesForProfessional(idProfessional, dateAppointment);
+    }
+
+    @Transactional
+    @Override
+    public Set<LocalDate> getDateAppointment(long idProfessional) throws UserNotExistsException, AppointmentNotExistsException {
+        professionalService.findProfessionalEntityById(idProfessional);
+
+        Set<LocalDate> dateAvailable = appointmentRepository.getAvailableAppointmentDatesForProfessional(idProfessional);
+
+        if(dateAvailable.isEmpty()) {
+            throw new AppointmentNotExistsException("La fecha del turno no exite");
+        }
+
+        return dateAvailable.stream().
+                filter(date -> LocalDate.now().isBefore(date)).
+                collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
@@ -194,21 +214,20 @@ public class AppointmentServiceImpl implements AppointmentService {
             SpecialityEntity specialityEntity
     ) throws AppointmentNotExistsException {
 
-        Optional<AppointmentEntity> normalReservation = availableAppointment.stream().
+        AppointmentEntity normalReservation = findAppointment(availableAppointment, appointment)
+                .orElseThrow(() -> new AppointmentNotExistsException("No se encontró turno disponible para el día " +
+                        appointment.getAppointmentDay() + " en el horario " + appointment.getAppointmentTime()));
+
+        saveAppointment(normalReservation, patientEntity, specialityEntity, AppointmentStatus.RESERVADO);
+    }
+
+    private Optional<AppointmentEntity> findAppointment(List<AppointmentEntity> availableAppointment, Appointment appointment ){
+
+        return availableAppointment.stream().
                 filter(app -> app.getAppointmentDay().equals(appointment.getAppointmentDay()) &&
                         app.getAppointmentTime().equals(appointment.getAppointmentTime()))
                 .findFirst();
 
-        if (normalReservation.isEmpty()) {
-            throw new AppointmentNotExistsException("No se encontró turno disponible para el día " +
-                    appointment.getAppointmentDay() + " en el horario " + appointment.getAppointmentTime());
-        }
-
-        AppointmentEntity appointmentEntity = normalReservation.get();
-
-        saveAppointment(appointmentEntity, patientEntity, specialityEntity);
-
-        appointmentRepository.save(appointmentEntity);
     }
 
     private void appointmentFirstTime(
@@ -218,44 +237,28 @@ public class AppointmentServiceImpl implements AppointmentService {
             SpecialityEntity specialityEntity
     ) throws AppointmentNotExistsException, AppoinmentNotGenerateException {
 
-        Optional<AppointmentEntity> firstReservation = availableAppointment.stream()
-                .filter(app -> app.getAppointmentDay().equals(appointment.getAppointmentDay()) &&
-                        app.getAppointmentTime().equals(appointment.getAppointmentTime()))
-                .findFirst();
+        AppointmentEntity firstReservation = findAppointment(availableAppointment, appointment)
+                .orElseThrow(() -> new AppointmentNotExistsException("No se encontro turno disponible para el día " +
+                        appointment.getAppointmentDay() + " en el horario " + appointment.getAppointmentTime()));
 
         LocalTime timeSecond = appointment.getAppointmentTime().plusMinutes(15);
 
-        Optional<AppointmentEntity> secondReservation = availableAppointment.stream()
+        AppointmentEntity secondReservation = availableAppointment.stream()
                 .filter(app -> app.getAppointmentDay().equals(appointment.getAppointmentDay()) &&
                         app.getAppointmentTime().equals(timeSecond))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new AppoinmentNotGenerateException("Este turno no está disponible para primera consulta"));
 
-        if (firstReservation.isEmpty() || secondReservation.isEmpty()) {
-            throw new AppoinmentNotGenerateException("Este turno no está disponible para primera consulta");
-        }
+        saveAppointment(firstReservation, patientEntity, specialityEntity, AppointmentStatus.RESERVADO);
+        saveAppointment(secondReservation, patientEntity, specialityEntity, AppointmentStatus.RESERVADO);
 
-        List<AppointmentEntity> appointmentsToSave = new ArrayList<>();
-
-        AppointmentEntity appointmentEntity = firstReservation.orElseThrow(() -> new AppointmentNotExistsException("No se encontro turno disponible para el día " +
-                    appointment.getAppointmentDay() + " en el horario " + appointment.getAppointmentTime()));
-
-        AppointmentEntity appointmentEntity2 = secondReservation.orElseThrow(() -> new AppointmentNotExistsException("No se encontro turno disponible para el día " +
-                    appointment.getAppointmentDay() + " en el horario " + appointment.getAppointmentTime()));
-
-
-        saveAppointment(appointmentEntity, patientEntity, specialityEntity);
-        saveAppointment(appointmentEntity2, patientEntity, specialityEntity);
-
-        appointmentsToSave.add(appointmentEntity);
-        appointmentsToSave.add(appointmentEntity2);
-
-        appointmentRepository.saveAll(appointmentsToSave);
     }
 
-    private void saveAppointment(AppointmentEntity appointmentEntity, PatientEntity patientEntity, SpecialityEntity specialityEntity){
+    private void saveAppointment(AppointmentEntity appointmentEntity, PatientEntity patientEntity, SpecialityEntity specialityEntity, AppointmentStatus status){
         appointmentEntity.setPatient(patientEntity);
         appointmentEntity.setSpeciality(specialityEntity);
-        appointmentEntity.setAppointmentStatus(AppointmentStatus.RESERVADO);
+        appointmentEntity.setAppointmentStatus(status);
+        appointmentRepository.save(appointmentEntity);
     }
 
     @Override
@@ -279,20 +282,22 @@ public class AppointmentServiceImpl implements AppointmentService {
                 nextTime,
                 idPatient);
 
-        if(nextAppointment.isPresent()){
-            AppointmentEntity appointment = nextAppointment.get();
-            appointment.setPatient(null);
-            appointment.setSpeciality(null);
-            appointment.setAppointmentStatus(AppointmentStatus.DISPONIBLE);
-            appointmentRepository.save(appointment);
-        }
+        nextAppointment.ifPresent(appointment -> saveAppointment(appointment, null, null, AppointmentStatus.DISPONIBLE));
+        saveAppointment(appointmentEntity, null, null, AppointmentStatus.DISPONIBLE);
 
-        appointmentEntity.setPatient(null);
-        appointmentEntity.setSpeciality(null);
-        appointmentEntity.setAppointmentStatus(AppointmentStatus.DISPONIBLE);
+    }
 
-        appointmentRepository.save(appointmentEntity);
+    @Override
+    @Transactional
+    public void deleteAppointment(long idProfessional, DayOfWeek dayOfWeek) throws UserNotExistsException {
+        int mySqlDay = mapJavaDayToMySQL(dayOfWeek);
+        LocalDate today = LocalDate.now();
+        appointmentRepository.deleteAppointmentsByDayOfWeekFromToday(idProfessional, mySqlDay, today);
 
+    }
+
+    private int mapJavaDayToMySQL(DayOfWeek dayOfWeek){
+        return dayOfWeek == DayOfWeek.MONDAY ? 1 : dayOfWeek.getValue() + 1;
     }
 
     private boolean isBefore48hours(LocalDate appointmentDay, LocalTime appointmentTime){
@@ -311,7 +316,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return patientEntity.getAppointmentsPatient().stream().map(appointment -> {
             AppointmentResponse response = new AppointmentResponse();
+            response.setIdAppointment(appointment.getIdAppointment());
             response.setDayAppointment(appointment.getAppointmentDay());
+            response.setStatus(appointment.getAppointmentStatus());
             response.setTimeAppointment(appointment.getAppointmentTime());
 
             response.setNameProfessional(String.format("%s %s",
@@ -326,22 +333,26 @@ public class AppointmentServiceImpl implements AppointmentService {
                 response.setSpeciality(specialityResponse);
             }
 
-            if (appointment.getAppointmentDay().isBefore(LocalDate.now()) ||
-                    (appointment.getAppointmentDay().equals(LocalDate.now()) && appointment.getAppointmentTime().isBefore(LocalTime.now()))){
-                response.setStatus(AppointmentStatus.FINALIZADO);
-            }else {
-                response.setStatus(AppointmentStatus.RESERVADO);
-            }
-
             return response;
         }).collect(Collectors.toList());
     }
 
+    //tengo que hacer blockedAppointment
 
     @Scheduled(cron = "0 0 0 * * ?")
-    @Transactional
+    public void generateAppointmenteAllProfessionals() throws AppoinmentNotGenerateException, ScheduleNotExistsException, UserNotExistsException {
+        List<ProfessionalEntity> allProf = professionalService.getAllProfessionalsEntity();
+
+        for(ProfessionalEntity p : allProf){
+            appointmentGenerate(p.getIdUser());
+        }
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * ?")
     public void updateExpiredAppointments() {
         appointmentRepository.markPastAppointmentsAsExpired();
     }
+
 
 }

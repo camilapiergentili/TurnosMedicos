@@ -8,12 +8,21 @@ import java.time.LocalTime;
 
 public class AppointmentResponse {
 
+    private long idAppointment;
     private LocalDate dayAppointment;
     private LocalTime timeAppointment;
     private AppointmentStatus status;
     private String nameProfessional;
     private SpecialityResponse speciality;
 
+
+    public long getIdAppointment() {
+        return idAppointment;
+    }
+
+    public void setIdAppointment(long idAppointment) {
+        this.idAppointment = idAppointment;
+    }
 
     public LocalDate getDayAppointment() {
         return dayAppointment;

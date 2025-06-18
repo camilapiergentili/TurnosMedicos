@@ -94,4 +94,5 @@ public class AppointmentEntity {
     public void setSpeciality(SpecialityEntity speciality) {
         this.speciality = speciality;
     }
+
 }

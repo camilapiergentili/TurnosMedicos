@@ -6,11 +6,14 @@ import ar.com.dontar.demo.exception.EmailAlreadyRegisteredException;
 import ar.com.dontar.demo.exception.PatientAlreadyExistsException;
 import ar.com.dontar.demo.exception.UserNotExistsException;
 import ar.com.dontar.demo.service.PatientService;
+import ar.com.dontar.demo.validation.validator.OnCreate;
+import ar.com.dontar.demo.validation.validator.OnUpdate;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +28,7 @@ public class PatientController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerPatient(@RequestBody @Valid PatientDto patientDto)
+    public ResponseEntity<Object> registerPatient(@RequestBody @Validated(OnCreate.class) PatientDto patientDto)
             throws PatientAlreadyExistsException, EmailAlreadyRegisteredException {
         patientService.signUp(patientDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Paciente registrado con éxito"));
@@ -50,20 +53,36 @@ public class PatientController {
         return patientService.findAllPatient();
     }
 
-    //modificar para q el adm busque por id
+
     @PreAuthorize("hasRole('PACIENTE') or hasRole('ADMINISTRADOR')")
     @PutMapping("/update")
-    public ResponseEntity<Object> update(@ModelAttribute("idUser") Long idUser, @RequestBody @Valid PatientDto patientDto)
-            throws UserNotExistsException {
-        patientService.updatePatient(idUser, patientDto);
+    public ResponseEntity<Object> update(@RequestParam(value="id", required = false) Long idPatient,
+                                         @ModelAttribute("idUser") Long idUser,
+                                         @ModelAttribute("userType") String userType,
+                                         @RequestBody @Validated(OnUpdate.class) PatientDto patientDto) throws UserNotExistsException {
+
+        if (userType.equals("ROLE_PACIENTE")) {
+            idPatient = idUser;
+        } else if (userType.equals("ROLE_PROFESIONAL") && idPatient == null) {
+            throw new IllegalArgumentException("Debe proporcionar el id del paciente");
+        }
+
+        patientService.updatePatient(idPatient, patientDto);
         return ResponseEntity.ok(Map.of("message", "Paciente actualizado con éxito"));
     }
 
     @PreAuthorize("hasRole('PACIENTE') or hasRole('ADMINISTRADOR')")
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> delete(@ModelAttribute("idUser") Long idUser)
-            throws UserNotExistsException {
-        patientService.detelePatient(idUser);
+    public ResponseEntity<Object> delete(@RequestParam(value= "id", required = false) Long idPatient,
+                                         @ModelAttribute("idUser") Long idUser,
+                                         @ModelAttribute("userType") String userType) throws UserNotExistsException {
+        if (userType.equals("ROLE_PACIENTE")) {
+            idPatient = idUser;
+        } else if (userType.equals("ROLE_PROFESIONAL") && idPatient == null) {
+            throw new IllegalArgumentException("Debe proporcionar el id del paciente");
+        }
+
+        patientService.detelePatient(idPatient);
         return ResponseEntity.ok(Map.of("message", "Paciente eliminado con éxito"));
     }
 }

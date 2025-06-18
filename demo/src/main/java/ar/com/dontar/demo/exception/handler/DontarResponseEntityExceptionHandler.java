@@ -32,7 +32,8 @@ public class DontarResponseEntityExceptionHandler extends ResponseEntityExceptio
         exeptionToErrorCodeMap.put(CancellationTimeExceededException.class, 1000);
         exeptionToErrorCodeMap.put(IncorrectPaswordException.class, 1001);
         exeptionToErrorCodeMap.put(InvalidRequestBodyException.class, 1002);
-
+        exeptionToErrorCodeMap.put(InvalidMedicalRecordDateException.class, 1003);
+        exeptionToErrorCodeMap.put(EmptyMedicalRecordException.class, 1004);
 
         //NOT_FOUND
         exeptionToErrorCodeMap.put(AppoinmentNotGenerateException.class, 2000);
@@ -48,7 +49,7 @@ public class DontarResponseEntityExceptionHandler extends ResponseEntityExceptio
         exeptionToErrorCodeMap.put(ProfessionalAlreadyExistsException.class, 3002);
         exeptionToErrorCodeMap.put(ScheduleAlreadyExistsException.class, 3003);
         exeptionToErrorCodeMap.put(SpecialityAlreadyExistsException.class, 3004);
-
+        exeptionToErrorCodeMap.put(MedicalRecordAlreadyExistsException.class, 3005);
         //UNAUTHORIZED
         exeptionToErrorCodeMap.put(AuthenticationException.class, 4000);
         exeptionToErrorCodeMap.put(ExtractInfoUserFromTokenException.class, 4001);
@@ -74,7 +75,10 @@ public class DontarResponseEntityExceptionHandler extends ResponseEntityExceptio
             AuthenticationException.class,
             ExtractInfoUserFromTokenException.class,
             AccessDeniedException.class,
-            InvalidRequestBodyException.class
+            InvalidRequestBodyException.class,
+            MedicalRecordAlreadyExistsException.class,
+            InvalidMedicalRecordDateException.class,
+            EmptyMedicalRecordException.class
 
     })
     protected ResponseEntity<Object> handleSpecificExceptions(Exception ex, WebRequest request) {

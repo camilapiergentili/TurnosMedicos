@@ -2,6 +2,7 @@ package ar.com.dontar.demo.controller;
 
 
 import ar.com.dontar.demo.controller.dto.ForgotPasswordDto;
+import ar.com.dontar.demo.controller.dto.PasswordChangeDto;
 import ar.com.dontar.demo.controller.response.AuthResponse;
 import ar.com.dontar.demo.controller.dto.LoginRequest;
 import ar.com.dontar.demo.exception.IncorrectPaswordException;
@@ -64,6 +65,13 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDto request) throws UserNotExistsException {
         userDetailsService.forgotPassaword(request.getUsername());
         return ResponseEntity.ok("Su contraseña ha sido reestablecida, es su numero de dni");
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@ModelAttribute("idUser")  long idUser,
+                                            @Valid @RequestBody PasswordChangeDto passwordChange) throws IncorrectPaswordException, UserNotExistsException {
+        userDetailsService.passwordNew(idUser, passwordChange);
+        return ResponseEntity.ok("Su contraseña ha sido cambiada con exito");
     }
 
 }

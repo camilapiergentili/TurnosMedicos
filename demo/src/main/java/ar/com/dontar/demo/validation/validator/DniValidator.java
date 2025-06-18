@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class DniValidator implements ConstraintValidator<ValidDniLong, Long> {
 
-    private static final String DNI_PATTERN = "^[0-9]{8}$";
+    private static final String DNI_PATTERN = "^[0-9]{7,8}$";
 
     @Override
     public boolean isValid(Long dni, ConstraintValidatorContext constraintValidatorContext) {

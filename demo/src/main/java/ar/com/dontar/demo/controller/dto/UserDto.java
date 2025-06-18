@@ -1,13 +1,15 @@
 package ar.com.dontar.demo.controller.dto;
 
+import ar.com.dontar.demo.validation.PasswordConfirmation;
 import ar.com.dontar.demo.validation.annotation.PasswordMatches;
 import ar.com.dontar.demo.validation.annotation.ValidDniLong;
 import ar.com.dontar.demo.validation.annotation.ValidPassword;
 import ar.com.dontar.demo.validation.annotation.ValidString;
+import ar.com.dontar.demo.validation.validator.OnCreate;
 import jakarta.validation.constraints.*;
 
 @PasswordMatches
-public class UserDto {
+public class UserDto implements PasswordConfirmation {
 
     @ValidDniLong
     private long dni;
@@ -22,8 +24,8 @@ public class UserDto {
     @Email(message = "Debe tener formato de email")
     private String username;
 
-    @NotNull(message = "La contraseña no puede estar vacia")
-    @ValidPassword
+    @NotNull(message = "La contraseña no puede estar vacia", groups = OnCreate.class)
+    @ValidPassword(groups = OnCreate.class)
     private String password;
 
     private String confirmPassword;
@@ -60,6 +62,7 @@ public class UserDto {
         this.lastName = lastName;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -68,6 +71,7 @@ public class UserDto {
         this.password = password;
     }
 
+    @Override
     public String getConfirmPassword() {
         return confirmPassword;
     }
