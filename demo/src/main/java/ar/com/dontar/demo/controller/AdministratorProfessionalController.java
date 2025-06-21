@@ -20,12 +20,12 @@ public class AdministratorProfessionalController {
     @Autowired
     ProfessionalService professionalService;
 
-    @PostMapping("/register-professional")
+    @PostMapping("/register")
     public ResponseEntity<ProfessionalResponse> registerProfessinal(@RequestBody ProfessionalDto professionalDto) throws ProfessionalAlreadyExistsException, SpecialityNotExistsException {
         return ResponseEntity.ok(professionalService.registerProfessional(professionalDto));
     }
 
-    @GetMapping("/find-by-dni/{dniProfessional}")
+    @GetMapping("/{dniProfessional}")
     public ResponseEntity<ProfessionalResponse> findProfessionalByDni(@PathVariable long dniProfessional) throws UserNotExistsException {
         return ResponseEntity.ok(professionalService.findProfessionalByDni(dniProfessional));
     }
@@ -42,7 +42,7 @@ public class AdministratorProfessionalController {
         return ResponseEntity.ok("La especialidad al profesional eliminada con exito");
     }
 
-    @DeleteMapping("/delete-professional/{Id}")
+    @DeleteMapping("/delete/{Id}")
     public ResponseEntity<Object> deleteProfessiona(@PathVariable long Id) throws UserNotExistsException {
         professionalService.deleteProfessional(Id);
         return ResponseEntity.ok("El profesional se elimino correctamente");

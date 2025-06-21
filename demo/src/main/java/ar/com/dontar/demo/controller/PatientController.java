@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/patients")
 public class PatientController {
 
     @Autowired
@@ -42,13 +42,13 @@ public class PatientController {
     }
 
     @PreAuthorize("hasRole('PROFESIONAL') or hasRole('ADMINISTRADOR')")
-    @GetMapping("/find-by-dni/{dniPatient}")
+    @GetMapping("/{dniPatient}")
     public ResponseEntity<PatientResponse> findPatientByDni(@PathVariable long dniPatient) throws UserNotExistsException {
         return ResponseEntity.ok(patientService.findPatientByDni(dniPatient));
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/get-all")
+    @GetMapping("/")
     public List<PatientResponse> getAllPatient(){
         return patientService.findAllPatient();
     }

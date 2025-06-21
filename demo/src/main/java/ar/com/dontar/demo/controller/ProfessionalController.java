@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/professional")
+@RequestMapping("/professionals")
 public class ProfessionalController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class ProfessionalController {
         return professionalService.getProfesionalSchedule(Id);
     }
 
-    @GetMapping("/all-professionals")
+    @GetMapping("/")
     public List<ProfessionalResponse> getAllProfessionals(){
         return professionalService.getAllProfessionals();
     }
