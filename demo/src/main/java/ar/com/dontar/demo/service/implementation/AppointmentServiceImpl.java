@@ -12,7 +12,6 @@ import ar.com.dontar.demo.persistence.entity.*;
 import ar.com.dontar.demo.service.AppointmentService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -154,6 +153,31 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         return appointmentRepository.getUnavailableAppointmentTimesForProfessional(idProfessional, dateAppointment);
+    }
+
+    @Override
+    public List<AppointmentResponse> allAppointment(long idProfessional, String date){
+        LocalDate dateLocal = LocalDate.parse(date);
+        List<AppointmentEntity> appointmentEntities = appointmentRepository.getAllAppointmentByProfessional(idProfessional, dateLocal);
+        return appointmentEntities.stream().map(appointment -> {
+            AppointmentResponse appointmentResponse = new AppointmentResponse();
+            appointmentResponse.setDayAppointment(appointment.getAppointmentDay());
+            appointmentResponse.setTimeAppointment(appointment.getAppointmentTime());
+            appointmentResponse.setStatus(appointment.getAppointmentStatus());
+            appointmentResponse.setNameProfessional(String.format("%s %s",
+                    appointment.getProfessional().getFirstName(),
+                    appointment.getProfessional().getLastName()));
+
+            if (appointment.getPatient() != null) {
+                appointmentResponse.setNamePatient(String.format("%s %s",
+                        appointment.getPatient().getFirstName(),
+                        appointment.getPatient().getLastName()));
+            } else {
+                appointmentResponse.setNamePatient("Sin paciente");
+            }
+
+            return appointmentResponse;
+        }).collect(Collectors.toList());
     }
 
     @Transactional

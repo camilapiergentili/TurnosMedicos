@@ -52,6 +52,11 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
             "AND a.appointmentStatus = 'DISPONIBLE'")
     Set<LocalDate> getAvailableAppointmentDatesForProfessional(@Param("idProfessional") long idProfessional);
 
+    @Query("SELECT a FROM AppointmentEntity a " +
+            "WHERE a.professional.id = :idProfessional " +
+            "AND a.appointmentDay = :date")
+    List<AppointmentEntity> getAllAppointmentByProfessional(@Param("idProfessional") long idProfessional,
+                                                            @Param("date") LocalDate date);
 
     @Query("SELECT a.appointmentTime FROM AppointmentEntity a " +
             "WHERE a.professional.id = :idProfessional " +

@@ -42,7 +42,7 @@ public class SecurityConfig {
                         //Rutas publicas accecibles para todos
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/auth/forgot-password").permitAll()
-                        .requestMatchers(HttpMethod.POST,  "/patient/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,  "/patients/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/professional/all-professionals").permitAll()
                         .requestMatchers("/", "/home", "/about", "/contact", "/css/**", "/js/**", "/images/**").permitAll()
 

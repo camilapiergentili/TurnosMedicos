@@ -16,6 +16,8 @@ public interface AppointmentService {
     List<LocalTime> getAvailableAppointment(long idProfessional, String date) throws UserNotExistsException, AppointmentNotExistsException, AppoinmentNotGenerateException;
     List<LocalTime> getUnavailableAppointment(long idProfessional, String date) throws UserNotExistsException, AppoinmentNotGenerateException;
 
+    List<AppointmentResponse> allAppointment(long idProfessional, String date);
+
     @Transactional
     Set<LocalDate> getDateAppointment(long idProfessional) throws UserNotExistsException, AppointmentNotExistsException;
 

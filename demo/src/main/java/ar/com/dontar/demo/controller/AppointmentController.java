@@ -40,6 +40,22 @@ public class AppointmentController {
     }
 
     @PreAuthorize("hasRole('PROFESIONAL') or hasRole('ADMINISTRADOR')")
+    @GetMapping("/all")
+    public List<AppointmentResponse> allAppointment(@RequestParam(required = false) Long idProfessional,
+                                                    @RequestParam String date,
+                                                    @ModelAttribute("idUser") Long idUser,
+                                                    @ModelAttribute("userType") String userType){
+        if(userType.equals("ROLE_PROFESIONAL")){
+            idProfessional = idUser;
+        }else if (userType.equals("ROLE_ADMINISTRADOR") && idProfessional == null) {
+            throw new IllegalArgumentException("Debe proporcionar un ID de profesional.");
+        }
+
+        return appointmentService.allAppointment(idProfessional, date);
+
+    }
+
+    @PreAuthorize("hasRole('PROFESIONAL') or hasRole('ADMINISTRADOR')")
     @GetMapping("/unavailable")
     public List<LocalTime> unavailableAppointment(@RequestParam(required = false) Long idProfessional,
                                                   @RequestParam String date,

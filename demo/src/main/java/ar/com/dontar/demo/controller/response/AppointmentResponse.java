@@ -13,6 +13,7 @@ public class AppointmentResponse {
     private LocalTime timeAppointment;
     private AppointmentStatus status;
     private String nameProfessional;
+    private String namePatient;
     private SpecialityResponse speciality;
 
 
@@ -62,5 +63,13 @@ public class AppointmentResponse {
 
     public void setSpeciality(SpecialityResponse speciality) {
         this.speciality = speciality;
+    }
+
+    public String getNamePatient() {
+        return namePatient;
+    }
+
+    public void setNamePatient(String namePatient) {
+        this.namePatient = namePatient;
     }
 }

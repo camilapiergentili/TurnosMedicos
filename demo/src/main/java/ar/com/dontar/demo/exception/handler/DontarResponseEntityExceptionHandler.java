@@ -19,14 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+//modificarlo
 @ControllerAdvice
 public class DontarResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Map<Class<? extends Exception>, Integer> exeptionToErrorCodeMap = new HashMap<>();
 
     static{
-
 
         //BAD_REQUEST
         exeptionToErrorCodeMap.put(CancellationTimeExceededException.class, 1000);
@@ -50,6 +49,7 @@ public class DontarResponseEntityExceptionHandler extends ResponseEntityExceptio
         exeptionToErrorCodeMap.put(ScheduleAlreadyExistsException.class, 3003);
         exeptionToErrorCodeMap.put(SpecialityAlreadyExistsException.class, 3004);
         exeptionToErrorCodeMap.put(MedicalRecordAlreadyExistsException.class, 3005);
+
         //UNAUTHORIZED
         exeptionToErrorCodeMap.put(AuthenticationException.class, 4000);
         exeptionToErrorCodeMap.put(ExtractInfoUserFromTokenException.class, 4001);
