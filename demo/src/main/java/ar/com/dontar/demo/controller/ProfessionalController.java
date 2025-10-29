@@ -26,7 +26,23 @@ public class ProfessionalController {
     @PreAuthorize("hasRole('PROFESIONAL')")
     @GetMapping("my-profile")
    public ResponseEntity<ProfessionalResponse> profileProfessional(@ModelAttribute("idUser") Long idUser) throws UserNotExistsException {
-        return ResponseEntity.ok(professionalService.findProfessionalByID(idUser));
+        return ResponseEntity.ok(professionalService.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                findProfessionalByID(idUser));
     }
 
     @GetMapping("/speciality/{IdSpeciality}")
