@@ -40,7 +40,7 @@ public class ProfessionalController {
         return professionalService.getProfesionalSchedule(Id);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<ProfessionalResponse> getAllProfessionals(){
         return professionalService.getAllProfessionals();
     }
