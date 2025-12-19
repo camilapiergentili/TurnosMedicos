@@ -49,7 +49,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/auth/forgot-password").permitAll()
                         .requestMatchers(HttpMethod.POST,  "/patients/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/professional/all-professionals").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/professionals").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/professionals/").permitAll()
                         .requestMatchers("/", "/home", "/about", "/contact", "/css/**", "/js/**", "/images/**").permitAll()
 
                         //Rutas protegidas por roles
